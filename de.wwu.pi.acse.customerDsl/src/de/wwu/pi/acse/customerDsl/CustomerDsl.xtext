@@ -1,0 +1,53 @@
+grammar de.wwu.pi.acse.customerDsl.CustomerDsl with org.eclipse.xtext.common.Terminals
+
+generate customerDsl "http://www.wwu.de/pi/acse/customerDsl/CustomerDsl"
+
+CustomerDb:
+	customers+=Customer*
+	orders+=Order*
+	products+=Product*
+;
+
+Customer:
+	'Customer' name=ID '{'
+		'name' fullName=STRING
+		addresses+=Address+
+	'}'
+;
+
+Address:
+	StreetAddress | POBox
+;
+
+StreetAddress:
+	'Address' name=ID '{'
+		( ('street' street=STRING) &
+		  ('city' city=STRING) &
+		  ('zip' zip=STRING) )
+	'}'
+;
+
+POBox:
+	'POBox' name=ID '{'
+		'number' number=INT
+		'zip' zip=STRING
+	'}'
+;
+
+Order:
+	'Order' name=ID '{'
+		'by' customer=[Customer]
+		'to' address=[Address]
+		('via' channel=OrderChannel)? 
+	'}'
+;
+
+enum OrderChannel:
+	WEB = 'web' | //default
+	MAIL = 'mail' | 
+	PHONE = 'phone'
+;
+
+Product:
+ 'Product' name=STRING? price=INT?
+;
